@@ -1,103 +1,143 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState } from 'react';
+import { Navigation } from '@/components/layout/Navigation';
+import { MobileNavigation } from '@/components/layout/MobileNavigation';
+import { PageIndicator } from '@/components/layout/PageIndicator';
+import { Terminal } from '@/components/overlays/Terminal';
+import { AIChat } from '@/components/overlays/AIChat';
+import { CodePlayground } from '@/components/overlays/codePlayground';
+import { MatrixRain } from '@/components/overlays/MatrixRain';
+import { SystemMetrics } from '@/components/ui/SystemMatrics';
+import { HomePage } from '@/components/pages/HomePage';
+import { AboutPage } from '@/components/pages/AboutPage';
+import { ProjectsPage } from '@/components/pages/ProjectPage';
+import { SkillsPage } from '@/components/pages/SkillsPage';
+import { ContactPage } from '@/components/pages/ContactPage';
+import { useLiveMetrics } from '@/hooks/useLiveMetrics';
+import { useTerminal } from '@/hooks/useTerminal';
+import { useMatrixEffect } from '@/hooks/useMatrixEffect';
+import { useVisitorCount } from '@/hooks/useVisitorCount';
+import { PageId } from '@/types';
+
+const NeuralPortfolio: React.FC = () => {
+  // State Management
+  const [currentPage, setCurrentPage] = useState<PageId>('home');
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [codePlaygroundOpen, setCodePlaygroundOpen] = useState(false);
+  const [walletConnected, setWalletConnected] = useState(false);
+
+  // Custom Hooks
+  const liveMetrics = useLiveMetrics();
+  const { terminalHistory, executeCommand, clearHistory } = useTerminal();
+  const { matrixMode, matrixCanvasRef, toggleMatrix } = useMatrixEffect();
+  const visitorCount = useVisitorCount();
+
+  // Handlers
+  const handlePageChange = (page: PageId) => setCurrentPage(page);
+  const handleTerminalToggle = () => setTerminalOpen(prev => !prev);
+  const handleAiChatToggle = () => setAiChatOpen(prev => !prev);
+  const handleCodePlaygroundToggle = () => setCodePlaygroundOpen(prev => !prev);
+  const handleWalletToggle = () => setWalletConnected(prev => !prev);
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'home':
+        return <HomePage liveMetrics={liveMetrics} visitorCount={visitorCount} />;
+      case 'about':
+        return <AboutPage />;
+      case 'projects':
+        return <ProjectsPage />;
+      case 'skills':
+        return <SkillsPage />;
+      case 'contact':
+        return <ContactPage />;
+      default:
+        return <HomePage liveMetrics={liveMetrics} visitorCount={visitorCount} />;
+    }
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden relative">
+      {/* Animated Background */}
+      <div className="fixed inset-0 opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-cyan-600/20 animate-pulse"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Matrix Rain Effect */}
+      <MatrixRain 
+        isActive={matrixMode} 
+        canvasRef={matrixCanvasRef} 
+      />
+
+      {/* Navigation */}
+      <Navigation
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+        onTerminalToggle={handleTerminalToggle}
+        onAiChatToggle={handleAiChatToggle}
+        onCodePlaygroundToggle={handleCodePlaygroundToggle}
+        onWalletToggle={handleWalletToggle}
+        walletConnected={walletConnected}
+      />
+
+      {/* Mobile Navigation */}
+      <MobileNavigation
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
+
+      {/* System Metrics */}
+      <SystemMetrics liveMetrics={liveMetrics} />
+
+      {/* Main Content */}
+      <div className="relative z-10 pt-20 md:pt-20">
+        {renderCurrentPage()}
+      </div>
+
+      {/* Overlays */}
+      <Terminal
+        isOpen={terminalOpen}
+        onClose={() => setTerminalOpen(false)}
+        history={terminalHistory}
+        onExecuteCommand={executeCommand}
+        onClearHistory={clearHistory}
+        onNavigate={handlePageChange}
+        onToggleMatrix={toggleMatrix}
+        onOpenPlayground={() => setCodePlaygroundOpen(true)}
+        liveMetrics={liveMetrics}
+      />
+
+      <AIChat
+        isOpen={aiChatOpen}
+        onClose={() => setAiChatOpen(false)}
+      />
+
+      <CodePlayground
+        isOpen={codePlaygroundOpen}
+        onClose={() => setCodePlaygroundOpen(false)}
+        liveMetrics={liveMetrics}
+      />
+
+      {/* Web3 Wallet Status */}
+      {walletConnected && (
+        <div className="fixed bottom-4 left-4 bg-black/80 backdrop-blur-lg border border-green-400 rounded-lg p-4 z-40">
+          <div className="flex items-center space-x-3">
+            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-green-400 font-semibold">Web3 Connected</span>
+          </div>
+          <div className="text-xs text-gray-400 mt-2">
+            Blockchain resume verification active
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
+
+      {/* Page Transition Indicator */}
+      <PageIndicator currentPage={currentPage} />
     </div>
   );
-}
+};
+
+export default NeuralPortfolio;

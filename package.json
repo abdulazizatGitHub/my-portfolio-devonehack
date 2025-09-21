@@ -6,22 +6,55 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "clean": "rm -rf .next out dist node_modules/.cache"
   },
   "dependencies": {
+    "lucide-react": "^0.544.0",
+    "next": "15.5.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.5.3"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "@eslint/eslintrc": "^3"
-  }
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "prettier": "^3.2.0",
+    "prettier-plugin-tailwindcss": "^0.5.0"
+  },
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "portfolio",
+    "ai-ml",
+    "neural-network",
+    "nextjs",
+    "typescript",
+    "react",
+    "tailwindcss",
+    "hackathon",
+    "web3",
+    "terminal"
+  ],
+  "author": {
+    "name": "Abdul Aziz",
+    "email": "abdulazizk1430@gmail.com",
+    "url": "https://github.com/abdulaziz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abdulaziz/neural-portfolio.git"
+  },
+  "license": "MIT",
+  "homepage": "https://abdulaziz-neural-portfolio.vercel.app"
 }

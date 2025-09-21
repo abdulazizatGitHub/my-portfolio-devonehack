@@ -4,10 +4,10 @@ export interface Project {
     description: string;
     tech: string[];
     github?: string;
-    link?: string;
-    ststus: 'completed' | 'in-progress' | 'planned';
+    demo?: string; // matches your JSON
+    status: 'completed' | 'in-progress' | 'planned'; // fixed typo
     category: "ai-ml" | "web-dev" | "research" | "mobile-dev" | "game-dev" | "other";
     highlights: string[];
     image?: string;
-    feathured?: boolean; 
+    featured?: boolean; // fixed typo
 }
