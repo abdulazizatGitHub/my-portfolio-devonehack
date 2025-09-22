@@ -1,3 +1,5 @@
+// src/hooks/useTerminal.ts
+
 import { useState, useCallback } from 'react';
 import { TerminalLine, PageId, LiveMetrics } from '@/types';
 import terminalCommands from '@/data/terminalCommands.json';
@@ -9,7 +11,9 @@ interface UseTerminalProps {
   liveMetrics: LiveMetrics;
 }
 
-export const useTerminal = ({ onNavigate, onToggleMatrix, onOpenPlayground, liveMetrics }: UseTerminalProps) => {
+export const useTerminal = (props: UseTerminalProps) => {
+  const { onNavigate, onToggleMatrix, onOpenPlayground, liveMetrics } = props;
+  
   const [terminalHistory, setTerminalHistory] = useState<TerminalLine[]>([
     {
       type: 'system',
@@ -77,8 +81,8 @@ export const useTerminal = ({ onNavigate, onToggleMatrix, onOpenPlayground, live
 
     if (cmd === 'playground') {
       onOpenPlayground();
-      const output = terminalCommands.playground?.output || ['Code playground activated!'];
-      output.forEach(line => {
+      const output = (terminalCommands as any).playground?.output || ['Code playground activated!'];
+      output.forEach((line: string) => {
         newHistory.push({
           type: 'output',
           content: line,

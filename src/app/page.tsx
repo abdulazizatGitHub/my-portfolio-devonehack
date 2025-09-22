@@ -28,18 +28,25 @@ const NeuralPortfolio: React.FC = () => {
   const [codePlaygroundOpen, setCodePlaygroundOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
 
-  // Custom Hooks
-  const liveMetrics = useLiveMetrics();
-  const { terminalHistory, executeCommand, clearHistory } = useTerminal();
-  const { matrixMode, matrixCanvasRef, toggleMatrix } = useMatrixEffect();
-  const visitorCount = useVisitorCount();
-
   // Handlers
   const handlePageChange = (page: PageId) => setCurrentPage(page);
   const handleTerminalToggle = () => setTerminalOpen(prev => !prev);
   const handleAiChatToggle = () => setAiChatOpen(prev => !prev);
   const handleCodePlaygroundToggle = () => setCodePlaygroundOpen(prev => !prev);
   const handleWalletToggle = () => setWalletConnected(prev => !prev);
+
+  // Custom Hooks
+  const liveMetrics = useLiveMetrics();
+  const { matrixMode, matrixCanvasRef, toggleMatrix } = useMatrixEffect();
+  const visitorCount = useVisitorCount();
+  
+  // Terminal hook with proper props
+  const { terminalHistory, executeCommand, clearHistory } = useTerminal({
+    onNavigate: handlePageChange,
+    onToggleMatrix: toggleMatrix,
+    onOpenPlayground: handleCodePlaygroundToggle,
+    liveMetrics
+  });
 
   const renderCurrentPage = () => {
     switch (currentPage) {
