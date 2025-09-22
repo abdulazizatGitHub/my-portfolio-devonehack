@@ -4,12 +4,7 @@ import nodesData from '@/data/nodes.json';
 
 export const useNeuralNetwork = (activeNode: string | null) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const validNodes: Node[] = nodesData.filter(
-        n => ['core', 'skill', 'project', 'experience', 'tool'].includes(n.type)
-    ) as Node[];
-
-  const [nodes] = useState<Node[]>(validNodes);
-
+  const [nodes] = useState<Node[]>(nodesData as Node[]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,7 +27,7 @@ export const useNeuralNetwork = (activeNode: string | null) => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw connections
+      // Draw connections with pulsing effect
       ctx.strokeStyle = `rgba(59, 130, 246, ${0.3 + Math.sin(time * 0.02) * 0.2})`;
       ctx.lineWidth = 2;
       
@@ -61,7 +56,7 @@ export const useNeuralNetwork = (activeNode: string | null) => {
         const isActive = activeNode === node.id;
         const radius = isActive ? 12 : 8;
         
-        // Glow effect
+        // Node glow effect
         const gradient = ctx.createRadialGradient(nodeX, nodeY, 0, nodeX, nodeY, radius * 2);
         gradient.addColorStop(0, `rgba(59, 130, 246, ${isActive ? 0.8 : 0.4})`);
         gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');

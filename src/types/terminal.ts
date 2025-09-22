@@ -8,5 +8,15 @@ export interface TerminalCommand {
   command: string;
   description: string;
   usage?: string;
-  action: () => string[];
+  output: string[];
+}
+
+export interface TerminalState {
+  history: TerminalLine[];
+  currentInput: string;
+  isOpen: boolean;
+}
+
+export interface CommandHandler {
+  [key: string]: (args?: string[]) => string[] | void;
 }

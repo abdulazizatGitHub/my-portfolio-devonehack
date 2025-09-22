@@ -1,16 +1,22 @@
-export interface PersonalDetails {
+export interface PersonalInfo {
   name: string;
-  role: string;
-  bio: string;
+  title: string;
+  location: string;
   email: string;
-  phone?: string;
-  location?: string;
-  website?: string;
-  github?: string;
-  linkedin?: string;
-  twitter?: string;
-  resumeUrl?: string;
-  interests?: string[];
-  languages?: { name: string; level: string }[];
-  availability?: "open" | "busy" | "not-looking";
+  phone: string;
+  bio: string;
+  education: {
+    degree: string;
+    university: string;
+    duration: string;
+    cgpa: string;
+  };
+  languages: Array<{
+    name: string;
+    level: string;
+  }>;
+  social: {
+    github: string;
+    linkedin: string;
+  };
 }

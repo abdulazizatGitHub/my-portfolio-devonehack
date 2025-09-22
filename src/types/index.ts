@@ -1,8 +1,7 @@
-export * from '@/types/project';
-export * from '@/types/skill';
-export * from '@/types/terminal';
-export * from '@/types/neural';
-export * from '@/types/personal';
+export * from './project';
+export * from './skill';
+export * from './terminal';
+export * from './neural';
 
 export interface LiveMetrics {
   cpuUsage: number;
