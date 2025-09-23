@@ -5,6 +5,7 @@ export interface PersonalInfo {
   email: string;
   phone: string;
   bio: string;
+  image?: string;
   education: {
     degree: string;
     university: string;

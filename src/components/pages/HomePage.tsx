@@ -28,7 +28,7 @@ export const HomePage: React.FC<HomePageProps> = ({ liveMetrics, visitorCount })
           <h1 className="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
             Abdul Aziz
           </h1>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-6">AI/ML Engineer & Neural Architect</p>
+          <p className="text-2xl md:text-3xl text-gray-300 mb-6">AI/ML Engineer</p>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
             Pioneering the future with GANs, Computer Vision, and Deep Learning. 
             Building intelligent systems that bridge the gap between imagination and reality.
@@ -46,7 +46,7 @@ export const HomePage: React.FC<HomePageProps> = ({ liveMetrics, visitorCount })
           </div>
           <div className="flex items-center space-x-2 px-4 py-2 bg-black/40 rounded-full border border-blue-400/30">
             <Globe className="w-5 h-5 text-blue-400" />
-            <span>Full Stack</span>
+            <span>Full Stack Web Development</span>
           </div>
         </div>
 

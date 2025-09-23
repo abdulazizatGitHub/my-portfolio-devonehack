@@ -3,6 +3,7 @@
 import React from 'react';
 import { Brain, Award, Briefcase, MapPin, Calendar, Mail, Linkedin, Github, User } from 'lucide-react';
 import personalData from '@/data/personal.json';
+import profileImage from '@/assets/usre.jpeg';
 
 export const AboutPage: React.FC = () => {
   return (
@@ -22,8 +23,14 @@ export const AboutPage: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-black/40 backdrop-blur-lg rounded-xl p-8 border border-white/10 sticky top-24">
               <div className="text-center mb-8">
-                <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-cyan-400 to-purple-400 rounded-full flex items-center justify-center">
-                  <User className="w-16 h-16 text-white" />
+                <div className="w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-cyan-400 to-purple-400 rounded-full flex items-center justify-center">
+                  <img
+                    src={profileImage.src}
+                    alt={personalData.name}
+                    width={128}
+                    height={128}
+                    className="w-40 h-40 rounded-full text-white"
+                   />
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">{personalData.name}</h2>
                 <p className="text-cyan-400 mb-4">{personalData.title}</p>
@@ -60,7 +67,7 @@ export const AboutPage: React.FC = () => {
             <div className="bg-black/40 backdrop-blur-lg rounded-xl p-8 border border-white/10">
               <h3 className="text-2xl font-bold text-cyan-400 mb-6 flex items-center">
                 <Brain className="w-6 h-6 mr-3" />
-                Neural Biography
+                Biography
               </h3>
               <div className="space-y-4 text-gray-300 leading-relaxed">
                 <p>{personalData.bio}</p>
