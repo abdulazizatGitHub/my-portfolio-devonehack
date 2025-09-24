@@ -1,14 +1,35 @@
 // src/components/pages/ProjectsPage.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Brain, Code, Database, ChevronRight, ExternalLink, Github, Eye, Filter } from 'lucide-react';
 import { Project } from '@/types';
 import projectsDataJson from '@/data/projects.json';
+import personalDataJson from '@/data/personal.json';
 const projectsData = projectsDataJson as Project[];
 
 export const ProjectsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [projects] = useState<Project[]>(projectsData);
+  const [githubStats, setGithubStats] = useState<{
+    repos: number;
+    commits: number;
+    stars: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchGithubStats = async () => {
+      try {
+        const res = await fetch("/api/github");
+        if (res.ok) {
+          const data = await res.json();
+          setGithubStats(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch GitHub stats:", err);
+      }
+    };
+    fetchGithubStats();
+  }, []);
 
   const filteredProjects = selectedCategory === 'all' 
     ? projects 
@@ -198,21 +219,21 @@ export const ProjectsPage: React.FC = () => {
             </p>
             <div className="flex items-center justify-center space-x-6 mb-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400">25+</div>
+                <div className="text-3xl font-bold text-purple-400">{githubStats?.repos ?? "--"}</div>
                 <div className="text-sm text-gray-400">Repositories</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-400">1,247</div>
+                <div className="text-3xl font-bold text-cyan-400">{githubStats?.commits ?? "--"}</div>
                 <div className="text-sm text-gray-400">Commits</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-400">15</div>
+                <div className="text-3xl font-bold text-green-400">{githubStats?.stars ?? "--"}</div>
                 <div className="text-sm text-gray-400">Stars</div>
               </div>
             </div>
             <div className="mt-6">
               <a 
-                href="https://github.com/abdulaziz"
+                href={personalDataJson.social.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg transition-all"

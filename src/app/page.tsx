@@ -37,9 +37,8 @@ const NeuralPortfolio: React.FC = () => {
   const handleWalletToggle = () => setWalletConnected(prev => !prev);
 
   // Custom Hooks
-  const liveMetrics = useLiveMetrics();
+  const { liveMetrics, visitorCount, commitsInfo } = useLiveMetrics();
   const { matrixMode, matrixCanvasRef, toggleMatrix } = useMatrixEffect();
-  const visitorCount = useVisitorCount();
   
   // Terminal hook with proper props
   const { terminalHistory, executeCommand, clearHistory } = useTerminal({
@@ -53,7 +52,7 @@ const NeuralPortfolio: React.FC = () => {
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage liveMetrics={liveMetrics} visitorCount={visitorCount} />;
+        return <HomePage liveMetrics={liveMetrics} visitorCount={visitorCount} commitsInfo = {commitsInfo} />;
       case 'about':
         return <AboutPage />;
       case 'projects':
@@ -63,7 +62,7 @@ const NeuralPortfolio: React.FC = () => {
       case 'contact':
         return <ContactPage />;
       default:
-        return <HomePage liveMetrics={liveMetrics} visitorCount={visitorCount} />;
+        return <HomePage liveMetrics={liveMetrics} visitorCount={visitorCount} commitsInfo = {commitsInfo} />;
     }
   };
 
