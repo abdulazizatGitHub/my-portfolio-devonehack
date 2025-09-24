@@ -1,140 +1,71 @@
-// src/hooks/useTerminal.ts
-
-import { useState, useCallback } from 'react';
-import { TerminalLine, PageId, LiveMetrics } from '@/types';
-import terminalCommands from '@/data/terminalCommands.json';
+import { useState, useCallback, useEffect } from "react";
+import { TerminalLine, PageId, LiveMetrics } from "@/types";
+import { runCommand } from "@/lib/commands";
 
 interface UseTerminalProps {
   onNavigate: (page: PageId) => void;
   onToggleMatrix: () => void;
   onOpenPlayground: () => void;
   liveMetrics: LiveMetrics;
+  onClose: () => void;
 }
 
 export const useTerminal = (props: UseTerminalProps) => {
-  const { onNavigate, onToggleMatrix, onOpenPlayground, liveMetrics } = props;
-  
-  const [terminalHistory, setTerminalHistory] = useState<TerminalLine[]>([
-    {
-      type: 'system',
-      content: '🧠 Neural Interface v2.0 initialized...',
-      timestamp: new Date().toLocaleTimeString()
-    },
-    {
-      type: 'system',
-      content: '🚀 AI/ML Engineer portfolio loaded',
-      timestamp: new Date().toLocaleTimeString()
-    },
-    {
-      type: 'output',
-      content: 'Type "help" for available commands',
-      timestamp: new Date().toLocaleTimeString()
+  const { onNavigate, onToggleMatrix, onOpenPlayground, liveMetrics, onClose } = props;
+
+  const [terminalHistory, setTerminalHistory] = useState<TerminalLine[]>(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("terminalHistory"): null;
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { type: "system", content: "🧠 Neural Interface v2.0 initialized...", timestamp: new Date().toLocaleTimeString() },
+          { type: "system", content: "🚀 AI/ML Engineer portfolio loaded", timestamp: new Date().toLocaleTimeString() },
+          { type: "output", content: 'Type "help" for available commands', timestamp: new Date().toLocaleTimeString() },
+        ];
+  });
+
+  // persist history
+  useEffect(() => {
+    localStorage.setItem("terminalHistory", JSON.stringify(terminalHistory));
+  }, [terminalHistory]);
+
+  const executeCommand = useCallback(
+    async (input: string) => {
+      const newHistory = [...terminalHistory];
+      newHistory.push({ type: "input", content: `> ${input}`, timestamp: new Date().toLocaleTimeString() });
+
+      const result = await runCommand(input, {
+        setHistory: setTerminalHistory,
+        onNavigate,
+        onToggleMatrix,
+        onOpenPlayground,
+        onClose,
+        liveMetrics,
+      });
+
+      if (input.trim() === "clear") {
+      setTerminalHistory([]); // ✅ wipe history fully
+      localStorage.removeItem("terminalHistory");
+      return;
     }
-  ]);
 
-  const executeCommand = useCallback((command: string) => {
-    const newHistory = [...terminalHistory];
-    newHistory.push({
-      type: 'input',
-      content: `> ${command}`,
-      timestamp: new Date().toLocaleTimeString()
-    });
-
-    const cmd = command.toLowerCase().trim();
-    
-    // Handle special commands
-    if (cmd === 'clear') {
-      setTerminalHistory([]);
-      return null;
-    }
-
-    if (cmd.startsWith('navigate ')) {
-      const page = cmd.replace('navigate ', '') as PageId;
-      if (['home', 'about', 'projects', 'skills', 'contact'].includes(page)) {
-        onNavigate(page);
+      if (result) {
         newHistory.push({
-          type: 'output',
-          content: `Navigated to ${page} page`,
-          timestamp: new Date().toLocaleTimeString()
-        });
-        setTerminalHistory(newHistory);
-        return { success: true };
-      } else {
-        newHistory.push({
-          type: 'error',
-          content: `Page "${page}" not found`,
-          timestamp: new Date().toLocaleTimeString()
+          type: result.type,
+          content: result.content,
+          timestamp: new Date().toLocaleTimeString(),
         });
       }
-    }
 
-    if (cmd === 'matrix') {
-      onToggleMatrix();
-      newHistory.push({
-        type: 'output',
-        content: 'Matrix mode toggled. Welcome to the neural reality.',
-        timestamp: new Date().toLocaleTimeString()
-      });
       setTerminalHistory(newHistory);
-      return { success: true };
-    }
-
-    if (cmd === 'playground') {
-      onOpenPlayground();
-      const output = (terminalCommands as any).playground?.output || ['Code playground activated!'];
-      output.forEach((line: string) => {
-        newHistory.push({
-          type: 'output',
-          content: line,
-          timestamp: new Date().toLocaleTimeString()
-        });
-      });
-      setTerminalHistory(newHistory);
-      return { success: true };
-    }
-
-    if (cmd === 'metrics') {
-      const metricsOutput = [
-        `CPU Usage: ${liveMetrics.cpuUsage.toFixed(1)}%`,
-        `Memory: ${liveMetrics.memoryUsage.toFixed(1)}%`,
-        `Neural Activity: ${liveMetrics.neuralActivity.toFixed(1)}%`,
-        `Task Queue: ${liveMetrics.taskQueue} pending`
-      ];
-      
-      metricsOutput.forEach(line => {
-        newHistory.push({
-          type: 'output',
-          content: line,
-          timestamp: new Date().toLocaleTimeString()
-        });
-      });
-      setTerminalHistory(newHistory);
-      return { success: true };
-    }
-
-    // Handle regular commands from JSON
-    const commandData = (terminalCommands as any)[cmd];
-    const output = commandData?.output || ['Command not found. Type "help" for available commands.'];
-
-    output.forEach((line: string) => {
-      newHistory.push({
-        type: 'output',
-        content: line,
-        timestamp: new Date().toLocaleTimeString()
-      });
-    });
-    
-    setTerminalHistory(newHistory);
-    return commandData;
-  }, [terminalHistory, onNavigate, onToggleMatrix, onOpenPlayground, liveMetrics]);
+    },
+    [terminalHistory, onNavigate, onToggleMatrix, onOpenPlayground, onClose, liveMetrics]
+  );
 
   const clearHistory = useCallback(() => {
     setTerminalHistory([]);
+    localStorage.removeItem("terminalHistory");
   }, []);
 
-  return {
-    terminalHistory,
-    executeCommand,
-    clearHistory
-  };
+  return { terminalHistory, executeCommand, clearHistory };
 };

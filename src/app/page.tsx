@@ -27,6 +27,7 @@ const NeuralPortfolio: React.FC = () => {
   const [aiChatOpen, setAiChatOpen] = useState(false);
   const [codePlaygroundOpen, setCodePlaygroundOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
+  const [terminalInput, setTerminalInput] = useState("");
 
   // Handlers
   const handlePageChange = (page: PageId) => setCurrentPage(page);
@@ -45,7 +46,8 @@ const NeuralPortfolio: React.FC = () => {
     onNavigate: handlePageChange,
     onToggleMatrix: toggleMatrix,
     onOpenPlayground: handleCodePlaygroundToggle,
-    liveMetrics
+    liveMetrics,
+    onClose: () => setTerminalOpen(false),
   });
 
   const renderCurrentPage = () => {
@@ -109,11 +111,12 @@ const NeuralPortfolio: React.FC = () => {
         isOpen={terminalOpen}
         onClose={() => setTerminalOpen(false)}
         history={terminalHistory}
-        onExecuteCommand={executeCommand}
-        onClearHistory={clearHistory}
-        onNavigate={handlePageChange}
-        onToggleMatrix={toggleMatrix}
-        onOpenPlayground={() => setCodePlaygroundOpen(true)}
+        input={terminalInput}
+        setInput={setTerminalInput}
+        onSubmit={executeCommand}
+        commandHistory={[]} 
+        historyIndex={-1} 
+        setHistoryIndex={() => {}}
         liveMetrics={liveMetrics}
       />
 
