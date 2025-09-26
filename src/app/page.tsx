@@ -5,7 +5,8 @@ import { Navigation } from '@/components/layout/Navigation';
 import { MobileNavigation } from '@/components/layout/MobileNavigation';
 import { PageIndicator } from '@/components/layout/PageIndicator';
 import { Terminal } from '@/components/overlays/Terminal';
-import { AIChat } from '@/components/overlays/AIChat';
+import { ChatWidget } from "@/components/overlays/ChatWidget";
+import { ChatWidgetButton } from "@/components/overlays/ChatWidgetButtton";
 import { CodePlayground } from '@/components/overlays/codePlayground';
 import { MatrixRain } from '@/components/overlays/MatrixRain';
 import { SystemMetrics } from '@/components/ui/SystemMatrics';
@@ -24,7 +25,7 @@ const NeuralPortfolio: React.FC = () => {
   // State Management
   const [currentPage, setCurrentPage] = useState<PageId>('home');
   const [terminalOpen, setTerminalOpen] = useState(false);
-  const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [codePlaygroundOpen, setCodePlaygroundOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
   const [terminalInput, setTerminalInput] = useState("");
@@ -32,7 +33,7 @@ const NeuralPortfolio: React.FC = () => {
   // Handlers
   const handlePageChange = (page: PageId) => setCurrentPage(page);
   const handleTerminalToggle = () => setTerminalOpen(prev => !prev);
-  const handleAiChatToggle = () => setAiChatOpen(prev => !prev);
+  const handleAiChatToggle = () => setChatOpen(prev => !prev);
   const handleCodePlaygroundToggle = () => setCodePlaygroundOpen(prev => !prev);
   const handleWalletToggle = () => setWalletConnected(prev => !prev);
 
@@ -119,10 +120,8 @@ const NeuralPortfolio: React.FC = () => {
         liveMetrics={liveMetrics}
       />
 
-      <AIChat
-        isOpen={aiChatOpen}
-        onClose={() => setAiChatOpen(false)}
-      />
+      <ChatWidget isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+      {!chatOpen && <ChatWidgetButton onClick={() => setChatOpen(true)} />}
 
       <CodePlayground
         isOpen={codePlaygroundOpen}
